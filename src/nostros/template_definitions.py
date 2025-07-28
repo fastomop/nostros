@@ -62,12 +62,39 @@ def get_descendent_concepts_template_from_vocab_code(schema, vocab, concept_code
         + f"JOIN (SELECT concept_id_1, concept_id_2 "
         + f"FROM {schema}.concept_relationship "
         + f"WHERE relationship_id='Maps to') {alias2} "
-        + f"ON {alias1}.concept_id={alias2}.concept_id_1)) {alias3} "
-        + f"JOIN {schema}.concept {alias4} ON {alias3}.concept_id_2={alias4}.concept_id) {alias5} "
-        + f"JOIN {schema}.concept_ancestor {alias6} ON {alias5}.concept_id={alias6}.ancestor_concept_id) AS {random_alias}"
+        + f"ON concept_id=concept_id_1)) {alias3} "
+        + f"JOIN {schema}.concept ON concept_id_2=concept_id) {alias4} "
+        + f"JOIN {schema}.concept_ancestor ON concept_id=ancestor_concept_id) AS {random_alias}"
     )
 
     return out
+
+    #     # support for 1+ codes (drug or condition)
+    # concept_codes_conditions = [
+    #     f"concept_code='{concept_code.strip()}'"
+    #     for concept_code in concept_codes.split(";")
+    #     if concept_code.strip()
+    # ]
+
+    # join_codes_condition = "( " + " OR ".join(concept_codes_conditions) + " )"
+
+    # out = (
+    #     f"( SELECT descendant_concept_id AS concept_id FROM "
+    #     + f"(SELECT * FROM "
+    #     + f"(SELECT concept_id_2 FROM "
+    #     + f"( "
+    #     + f"(SELECT concept_id FROM "
+    #     + f"{schema}.concept WHERE vocabulary_id='{vocab}' AND {join_codes_condition}) "
+    #     + f"JOIN "
+    #     + f"( SELECT concept_id_1, concept_id_2 FROM "
+    #     + f"{schema}.concept_relationship WHERE relationship_id='Maps to' ) "
+    #     + f"ON concept_id=concept_id_1) "
+    #     + f") JOIN {schema}.concept ON concept_id_2=concept_id) "
+    #     + f"JOIN {schema}.concept_ancestor ON concept_id=ancestor_concept_id "
+    #     + f") "
+    # )
+
+    # return out
 
 
 def get_unique_concept_template(schema, domain, concept_name):

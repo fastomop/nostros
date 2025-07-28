@@ -5,7 +5,7 @@ SPDX-License-Identifier: CC-BY-NC-4.0
 """
 
 import re
-import config
+import src.nostros.config as config
 
 SCHEMA_P = re.compile("<SCHEMA>")
 

@@ -8,9 +8,9 @@ import json
 import re
 import os
 from typing import Dict, List, Any
-import config
-from sql_processing import render_template_query
-from rendering_functions import (
+import src.nostros.config as config
+from src.nostros.sql_processing import render_template_query
+from src.nostros.rendering_functions import (
     render_gender_template,
     render_condition_template,
     render_drug_template,

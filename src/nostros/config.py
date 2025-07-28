@@ -1,9 +1,9 @@
 from os import path as osp
-from template_definitions import (
+from src.nostros.template_definitions import (
     get_state_name_template,
     get_concept_name_template,
 )
-from rendering_functions import (
+from src.nostros.rendering_functions import (
     render_gender_template,
     render_race_template,
     render_ethnicity_template,

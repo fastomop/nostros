@@ -2,3 +2,4 @@
 *.csv
 *.sql
 *.json
+*.pyc

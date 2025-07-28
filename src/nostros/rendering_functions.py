@@ -8,7 +8,7 @@ SPDX-License-Identifier: CC-BY-NC-4.0
 # The mapping placeholder -> template is specified in src/config & the rendered sub-queries in template_definitions.
 
 
-from template_definitions import (
+from src.nostros.template_definitions import (
     #     get_descendent_concepts_template_from_concept_name,
     get_descendent_concepts_template_from_vocab_code,
     get_unique_concept_template,
