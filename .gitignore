@@ -1,5 +1,4 @@
 # Ignore data files
-*.csv
 *.sql
 *.json
 *.pyc
