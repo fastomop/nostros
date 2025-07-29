@@ -2,3 +2,4 @@
 *.sql
 *.json
 *.pyc
+.env
