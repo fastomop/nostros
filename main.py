@@ -258,37 +258,6 @@ def save_results(rendered_queries: List[Dict], output_file: str):
     print(f"Saved detailed results to: {json_file}")
 
 
-def test_individual_templates():
-    """
-    Test individual template rendering functions with sample data.
-    """
-    print("Testing individual template functions:")
-    print("-" * 40)
-    
-    schema = config.SCHEMA
-    
-    # Test gender template
-    try:
-        gender_template = render_gender_template(schema, "FEMALE")
-        print(f"Gender template (FEMALE):\n{gender_template}\n")
-    except Exception as e:
-        print(f"Error with gender template: {e}\n")
-    
-    # Test condition template
-    try:
-        condition_template = render_condition_template(schema, "E11")
-        print(f"Condition template (E11 - Diabetes):\n{condition_template}\n")
-    except Exception as e:
-        print(f"Error with condition template: {e}\n")
-    
-    # Test drug template
-    try:
-        drug_template = render_drug_template(schema, "1154343")
-        print(f"Drug template (1154343):\n{drug_template}\n")
-    except Exception as e:
-        print(f"Error with drug template: {e}\n")
-
-
 if __name__ == "__main__":
     print("NOSTROS Query Translator")
     print("=" * 50)

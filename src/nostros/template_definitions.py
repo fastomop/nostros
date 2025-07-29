@@ -32,44 +32,7 @@ def get_descendent_concepts_template_from_vocab_code(schema, vocab, concept_code
         concept_code = A97;G47.00
 
     """
-    # support for 1+ codes (drug or condition)
-    concept_codes_conditions = [
-        f"concept_code='{concept_code.strip()}'"
-        for concept_code in concept_codes.split(";")
-        if concept_code.strip()
-    ]
-
-    join_codes_condition = "( " + " OR ".join(concept_codes_conditions) + " )"
-
-    # Generate random 3-letter aliases for different parts of the query
-    alias1 = ''.join(random.choices(string.ascii_lowercase, k=3))
-    alias2 = ''.join(random.choices(string.ascii_lowercase, k=3))
-    alias3 = ''.join(random.choices(string.ascii_lowercase, k=3))
-    alias4 = ''.join(random.choices(string.ascii_lowercase, k=3))
-    alias5 = ''.join(random.choices(string.ascii_lowercase, k=3))
-    alias6 = ''.join(random.choices(string.ascii_lowercase, k=3))
-
-    # Generate random 3-letter alias
-    random_alias = ''.join(random.choices(string.ascii_lowercase, k=3))
-
-    out = (
-        f"(SELECT descendant_concept_id AS concept_id "
-        + f"FROM (SELECT * "
-        + f"FROM (SELECT concept_id_2 "
-        + f"FROM ((SELECT concept_id "
-        + f"FROM {schema}.concept "
-        + f"WHERE vocabulary_id='{vocab}' AND {join_codes_condition}) {alias1} "
-        + f"JOIN (SELECT concept_id_1, concept_id_2 "
-        + f"FROM {schema}.concept_relationship "
-        + f"WHERE relationship_id='Maps to') {alias2} "
-        + f"ON concept_id=concept_id_1)) {alias3} "
-        + f"JOIN {schema}.concept ON concept_id_2=concept_id) {alias4} "
-        + f"JOIN {schema}.concept_ancestor ON concept_id=ancestor_concept_id) AS {random_alias}"
-    )
-
-    return out
-
-    #     # support for 1+ codes (drug or condition)
+    # # support for 1+ codes (drug or condition)
     # concept_codes_conditions = [
     #     f"concept_code='{concept_code.strip()}'"
     #     for concept_code in concept_codes.split(";")
@@ -78,23 +41,60 @@ def get_descendent_concepts_template_from_vocab_code(schema, vocab, concept_code
 
     # join_codes_condition = "( " + " OR ".join(concept_codes_conditions) + " )"
 
+    # # Generate random 3-letter aliases for different parts of the query
+    # alias1 = ''.join(random.choices(string.ascii_lowercase, k=3))
+    # alias2 = ''.join(random.choices(string.ascii_lowercase, k=3))
+    # alias3 = ''.join(random.choices(string.ascii_lowercase, k=3))
+    # alias4 = ''.join(random.choices(string.ascii_lowercase, k=3))
+    # alias5 = ''.join(random.choices(string.ascii_lowercase, k=3))
+    # alias6 = ''.join(random.choices(string.ascii_lowercase, k=3))
+
+    # # Generate random 3-letter alias
+    # random_alias = ''.join(random.choices(string.ascii_lowercase, k=3))
+
     # out = (
-    #     f"( SELECT descendant_concept_id AS concept_id FROM "
-    #     + f"(SELECT * FROM "
-    #     + f"(SELECT concept_id_2 FROM "
-    #     + f"( "
-    #     + f"(SELECT concept_id FROM "
-    #     + f"{schema}.concept WHERE vocabulary_id='{vocab}' AND {join_codes_condition}) "
-    #     + f"JOIN "
-    #     + f"( SELECT concept_id_1, concept_id_2 FROM "
-    #     + f"{schema}.concept_relationship WHERE relationship_id='Maps to' ) "
-    #     + f"ON concept_id=concept_id_1) "
-    #     + f") JOIN {schema}.concept ON concept_id_2=concept_id) "
-    #     + f"JOIN {schema}.concept_ancestor ON concept_id=ancestor_concept_id "
-    #     + f") "
+    #     f"(SELECT descendant_concept_id AS concept_id "
+    #     + f"FROM (SELECT * "
+    #     + f"FROM (SELECT concept_id_2 "
+    #     + f"FROM ((SELECT concept_id "
+    #     + f"FROM {schema}.concept "
+    #     + f"WHERE vocabulary_id='{vocab}' AND {join_codes_condition}) {alias1} "
+    #     + f"JOIN (SELECT concept_id_1, concept_id_2 "
+    #     + f"FROM {schema}.concept_relationship "
+    #     + f"WHERE relationship_id='Maps to') {alias2} "
+    #     + f"ON concept_id=concept_id_1)) {alias3} "
+    #     + f"JOIN {schema}.concept ON concept_id_2=concept_id) {alias4} "
+    #     + f"JOIN {schema}.concept_ancestor ON concept_id=ancestor_concept_id) AS {random_alias}"
     # )
 
     # return out
+
+        # support for 1+ codes (drug or condition)
+    concept_codes_conditions = [
+        f"concept_code='{concept_code.strip()}'"
+        for concept_code in concept_codes.split(";")
+        if concept_code.strip()
+    ]
+
+    join_codes_condition = "( " + " OR ".join(concept_codes_conditions) + " )"
+
+    out = (
+        f"( SELECT descendant_concept_id AS concept_id FROM "
+        + f"(SELECT * FROM "
+        + f"(SELECT concept_id_2 FROM "
+        + f"( "
+        + f"(SELECT concept_id FROM "
+        + f"{schema}.concept WHERE vocabulary_id='{vocab}' AND {join_codes_condition}) "
+        + f"JOIN "
+        + f"( SELECT concept_id_1, concept_id_2 FROM "
+        + f"{schema}.concept_relationship WHERE relationship_id='Maps to' ) "
+        + f"ON concept_id=concept_id_1) "
+        + f") JOIN {schema}.concept ON concept_id_2=concept_id) "
+        + f"JOIN {schema}.concept_ancestor ON concept_id=ancestor_concept_id "
+        + f") "
+    )
+
+    return out
 
 
 def get_unique_concept_template(schema, domain, concept_name):
@@ -117,7 +117,7 @@ def get_unique_concept_template(schema, domain, concept_name):
         + f"WHERE concept_name='{concept_name}' "
         + f"AND domain_id='{domain}' "
         + f"AND standard_concept='S' "
-        + f") AS {domain.lower()}_arg"
+        + f")"
     )
 
     return out
@@ -141,7 +141,7 @@ def get_concept_name_template(schema, domain):
         + f"FROM {schema}.concept "
         + f"WHERE domain_id='{domain}' "
         + f"AND standard_concept='S' "
-        + f") AS {domain.lower()}_narg"
+        + f")"
     )
 
     return out
@@ -163,7 +163,7 @@ def get_state_template(schema, state_acronym):
         + f"SELECT location_id "
         + f"FROM {schema}.location "
         + f"WHERE state='{state_acronym}' "
-        + f") AS {state_acronym.lower()}_narg"
+        + f")"
     )
     return out
 

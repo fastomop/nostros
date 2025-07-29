@@ -29,8 +29,24 @@ def preprocess_sql_for_postgres(sql: str) -> str:
     return sql
 
 def postprocess_sql_for_postgres(sql: str) -> str:
-    """Post-process transpiled SQL to fix any remaining issues."""
-    # Additional post-processing can be added here if needed
+    """
+    Post-process transpiled SQL to fix any remaining issues.
+    Ensures subqueries in JOINs have aliases in PostgreSQL.
+    """
+    alias_counter = 1
+
+    def add_alias_to_join(match):
+        nonlocal alias_counter
+        subquery = match.group(1)
+        on_clause = match.group(2)
+        alias = f"alias{alias_counter}"
+        alias_counter += 1
+        return f"JOIN ({subquery}) AS {alias} {on_clause}"
+
+    # Matches: JOIN (SELECT ...) <optional whitespace> ON ...
+    pattern = r"JOIN\s*\((SELECT[\s\S]+?)\)\s*(ON\s+[^)]+)"
+    sql = re.sub(pattern, add_alias_to_join, sql, flags=re.IGNORECASE)
+
     return sql
 
 def extract_sql_queries(file_content: str) -> list:
