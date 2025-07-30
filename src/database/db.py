@@ -1,6 +1,7 @@
 import os
 import pandas as pd
 import psycopg2
+import re
 from psycopg2.extras import RealDictCursor
 from dotenv import load_dotenv
 
@@ -20,7 +21,14 @@ class SimpleOmopDB:
 
     def run_query(self, sql: str, row_limit: int = 1000) -> str:
         try:
-            query = f"{sql.strip().rstrip(';')} LIMIT {row_limit};"
+            cleaned_sql = sql.strip().rstrip(';')
+            
+            # Check if LIMIT already exists (case-insensitive)
+            if not re.search(r'\bLIMIT\s+\d+\b', cleaned_sql, re.IGNORECASE):
+                query = f"{cleaned_sql} LIMIT {row_limit};"
+            else:
+                query = f"{cleaned_sql};"
+                
             with self.conn.cursor(cursor_factory=RealDictCursor) as cursor:
                 cursor.execute(query)
                 results = cursor.fetchall()
@@ -29,5 +37,5 @@ class SimpleOmopDB:
         except Exception as e:
             raise RuntimeError(f"Query execution failed: {str(e)}")
 
-db = SimpleOmopDB()
-print(db.run_query("SELECT * FROM person"))
+# db = SimpleOmopDB()
+# print(db.run_query("SELECT * FROM person"))

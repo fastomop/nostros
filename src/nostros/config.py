@@ -1,4 +1,9 @@
 from os import path as osp
+import os
+import psycopg2
+from urllib.parse import urlparse
+from dotenv import load_dotenv
+
 from src.nostros.template_definitions import (
     get_state_name_template,
     get_concept_name_template,
@@ -63,3 +68,17 @@ REDSHIFT_PARM = {
     "url": "SPECIFY THE DATA BASE URL",
     "region": "SPECIFY THE AWS REGION. E.G. us-east-1",
 }
+
+load_dotenv()
+
+def get_db_connection():
+    db_url = os.getenv("DB_CONNECTION_STRING")
+    parsed = urlparse(db_url)
+
+    return psycopg2.connect(
+        dbname=parsed.path[1:],
+        user=parsed.username,
+        password=parsed.password,
+        host=parsed.hostname,
+        port=parsed.port,
+    )
