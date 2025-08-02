@@ -87,7 +87,6 @@ nostros/
 - `output/rendered_queries.json` - Processing details and errors
 
 ## Requirements
-◊
 - Python 3.8+
 - pandas, sqlglot, psycopg2, python-dotenv
 
